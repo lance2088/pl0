@@ -1,5 +1,16 @@
 apply plugin: 'groovy'
 apply plugin: 'eclipse'
+apply plugin: 'cobertura'
+
+
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath "net.saliman:gradle-cobertura-plugin:2.2.4"
+	}
+}
 
 repositories {
     mavenCentral()
@@ -9,3 +20,11 @@ dependencies {
     compile 'org.codehaus.groovy:groovy:2.3.6'
     testCompile 'junit:junit:4.11'
 }
+
+cobertura {
+	coverageFormats = ['html', 'xml']
+	coverageIgnoreTrivial = true
+	coverageReportDir = new File("$buildDir/reports/cobertura")
+}
+
+test.finalizedBy(project.tasks.cobertura)

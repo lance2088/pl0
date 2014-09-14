@@ -1,10 +1,14 @@
 package org.flavio.fiuba.pl0
 
+import groovy.transform.Immutable;
+import groovy.transform.ToString;
 
-@groovy.transform.Immutable
+
+@Immutable
+@ToString(includePackage = false, includeNames = true)
 class Symbol {
 
-	String value;
 	SymbolType type;
+	String value;
 	
 }
