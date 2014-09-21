@@ -1,11 +1,25 @@
 package org.flavio.fiuba.pl0
 
+import java.io.StreamTokenizer;
+
+
+
 class Scanner {
 
 	StreamTokenizer tokenizer
 	TokenEvaluator evaluator
 	Symbol symbol
-
+	
+	int lineNumber() {
+		return tokenizer.lineno()
+	}
+	
+	boolean hasNext() {
+		int token = tokenizer.nextToken()
+		tokenizer.pushBack()
+		return !(tokenizer.ttype == StreamTokenizer.TT_EOF)
+	}
+	
 	Scanner(Reader reader) {
 		tokenizer = new StreamTokenizer(reader)
 		tokenizer.lowerCaseMode(true)
