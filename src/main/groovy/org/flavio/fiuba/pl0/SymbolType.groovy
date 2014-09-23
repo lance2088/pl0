@@ -1,6 +1,5 @@
 package org.flavio.fiuba.pl0
 
-import marcos.saladino.compiler.SymbolicValue;
 import groovy.transform.TupleConstructor
 
 @TupleConstructor
