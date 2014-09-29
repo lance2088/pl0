@@ -1,6 +1,7 @@
 package org.flavio.fiuba.pl0;
 
 import static org.junit.Assert.*
+import static org.flavio.fiuba.pl0.SymbolType.*
 import groovy.util.logging.Slf4j;
 
 import org.junit.Test
@@ -68,6 +69,12 @@ class ParserTest {
 	}
 	
 	@Test
+	public void testBadCONST3() {
+		setUp("CONST A=3;CONST=B=2.")
+		assertTrue(parser.error)
+	}
+	
+	@Test
 	public void testServeralVAR() {
 		setUp("VAR A,FLAVIO;.");
 		assertFalse(parser.error)
@@ -84,5 +91,7 @@ class ParserTest {
 		setUp("VAR A=something.")
 		assertTrue(parser.error)
 	}
+	
+
 	
 }

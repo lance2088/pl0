@@ -7,7 +7,7 @@ import org.junit.Test
 
 
 @Slf4j
-class ParserTestComplexBlock {
+class ParserTestAssign {
 
 	Parser parser
 
@@ -19,17 +19,18 @@ class ParserTestComplexBlock {
 		parser.scan()
 	}
 
+	
 	@Test
-	public void testBlock() {
-		setUp("CONST a=4;VAR x;.")		
+	public void testSimpleAssign() {
+		setUp("A:=4 .")
 		assertFalse(parser.error)
 	}
 	
-	
 	@Test
-	public void testBadBlock() {
-		setUp("VAR x; CONST a=4;.")
-		assertTrue(parser.error)
+	public void testPlusMinusAssign() {
+		setUp("A:=4+4-3 .")
+		assertFalse(parser.error)
 	}
+
 	
 }

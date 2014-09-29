@@ -1,9 +1,11 @@
 package org.flavio.fiuba.pl0
 
+import groovy.transform.TypeChecked;
+
 import java.io.StreamTokenizer;
 
 
-
+@TypeChecked
 class Scanner {
 
 	StreamTokenizer tokenizer
@@ -94,6 +96,10 @@ class Scanner {
 			symbol = evaluator.createError(value as String)
 			tokenizer.pushBack()
 		}
+	}
+	
+	String toString() {
+		return tokenizer.toString()
 	}
 	
 }

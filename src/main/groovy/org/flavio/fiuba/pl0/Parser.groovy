@@ -1,34 +1,40 @@
 package org.flavio.fiuba.pl0
 
 import static org.flavio.fiuba.pl0.SymbolType.*
+import groovy.transform.TypeChecked;
 import groovy.util.logging.Slf4j
 import ch.qos.logback.core.rolling.helper.PeriodicityType
 
 @Slf4j
+@TypeChecked
 class Parser {
-	
+
 	Scanner scanner;
 	boolean error = false;
-	
+
 	Parser (Scanner scanner){
 		this.scanner = scanner
 	}
 
 	void scan() {
-		log.debug("Parser START")
+		log.debug('PROGRAM')
 		scanner.next()
-		block()		
+		block()
 		expect(PERIOD)
 	}
-	
+
 	boolean accept(SymbolType symbolType){
-        if (scanner.symbol.type == symbolType){
-            scanner.next();
-            return true;
-        }
-        return false;
-    }
+		if (scanner.symbol.type == symbolType){
+			scanner.next();
+			return true;
+		}
+		return false;
+	}
 	
+	boolean accept(List<SymbolType> symbols){
+		return symbols.contains(scanner.symbol.type);
+	}
+
 	boolean expect(SymbolType symbolType) {
 		if (accept(symbolType)) {
 			return true
@@ -36,35 +42,53 @@ class Parser {
 		error = true
 		log.error("Unexpected token:{} @ line {}. {} expected", scanner.symbol.value, scanner.lineNumber(), symbolType)
 		return false
-	}  
-	
+	}
+
 	void block() {
-		log.debug("BLOCK")
-		while(scanner.hasNext() && tokenTypeIn([CONST, VAR, PROCEDURE, PERIOD]) && !error) {
-			if (accept(CONST)) {
-				cons()
-			} else if (accept (VAR)) {
-				var();
-			} else if (accept (PROCEDURE)) {
-				procedure();
-			}
-		} 
+		log.debug('BLOCK')
+		if (accept(CONST)) {
+			cons()
+		}
+		if (accept (VAR)) {
+			var()
+		}
+		while(accept (PROCEDURE)) {
+			procedure()
+		}
+		preposition()
+	}
+
+	
+	void preposition() {
+		if (accept(IDENTIFIER)) {
+			log.debug('ASSIGN')
+			expect(ASSIGN)
+			expression()
+		}
+		if (accept(CALL)) {
+			expect(IDENTIFIER)
+		}
 	}
 	
-	boolean tokenTypeIn(list) {
-		return list.contains(scanner.symbol.type);
+	void expression() {
+		log.debug('EXPRESSION')
+		accept([PLUS,MINUS])
+		expect(INTEGER)
+		while(accept([PLUS,MINUS])) {
+			expect(INTEGER)
+		}
 	}
-	
+
 	void procedure() {
-		log.debug("PROCEDURE")
+		log.debug('PROCEDURE')
 		expect(IDENTIFIER)
 		expect(SEMICOLON)
 		block();
 		expect(SEMICOLON)
 	}
-		
+
 	void cons() {
-		log.debug("CONST")
+		log.debug('CONST')
 		while (true) {
 			expect(IDENTIFIER)
 			expect(EQ)
@@ -73,14 +97,13 @@ class Parser {
 		}
 		expect(SEMICOLON)
 	}
-	
+
 	void var() {
-		log.debug("VAR")
+		log.debug('VAR')
 		while (true) {
 			expect(IDENTIFIER)
 			if (!accept(COMMA)) break
 		}
 		expect(SEMICOLON)
 	}
-	
 }
